@@ -1,25 +1,24 @@
 {
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
-  "appId": "com.coder.pulldash",
+  "appId": "tools.paradoxon.pulldash",
   "productName": "Pulldash",
-  "copyright": "Copyright © 2025 Coder",
-
+  "copyright": "Copyright © 2026 paradoxon-tools; original contributors retain their copyrights",
   "directories": {
     "output": "release",
     "buildResources": "build",
     "app": "dist"
   },
-
   "files": ["electron/**/*", "browser/**/*", "!browser/**/*.map"],
-
   "extraResources": [
     {
       "from": "dist/browser",
       "to": "browser",
       "filter": ["**/*", "!**/*.map"]
-    }
+    },
+    { "from": "LICENSE", "to": "LICENSE" },
+    { "from": "NOTICE", "to": "NOTICE" },
+    { "from": "build/icon.ico", "to": "icon.ico" }
   ],
-
   "mac": {
     "category": "public.app-category.developer-tools",
     "icon": "build/icon.icns",
@@ -37,7 +36,6 @@
       }
     ]
   },
-
   "dmg": {
     "icon": "build/icon.icns",
     "iconSize": 128,
@@ -58,7 +56,6 @@
       "height": 380
     }
   },
-
   "win": {
     "icon": "build/icon.ico",
     "target": [
@@ -72,12 +69,11 @@
       }
     ]
   },
-
   "nsis": {
     "oneClick": false,
     "perMachine": false,
     "allowToChangeInstallationDirectory": true,
-    "deleteAppDataOnUninstall": true,
+    "deleteAppDataOnUninstall": false,
     "installerIcon": "build/icon.ico",
     "uninstallerIcon": "build/icon.ico",
     "installerHeaderIcon": "build/icon.ico",
@@ -85,7 +81,6 @@
     "createStartMenuShortcut": true,
     "shortcutName": "Pulldash"
   },
-
   "linux": {
     "icon": "build/icon.png",
     "category": "Development",
@@ -102,11 +97,5 @@
     "synopsis": "Fast GitHub PR Reviews",
     "description": "A lightning-fast, local PR review dashboard with syntax highlighting."
   },
-
-  "publish": {
-    "provider": "github",
-    "owner": "coder",
-    "repo": "pulldash",
-    "releaseType": "release"
-  }
+  "publish": null
 }

@@ -1,62 +1,31 @@
-<h1>
-  <img src="src/browser/logo.svg" alt="pulldash logo" width="40" height="40" align="center">
-  Pulldash
-</h1>
+# Pulldash
 
-![GitHub Release](https://img.shields.io/github/v/release/coder/pulldash) ![GitHub License](https://img.shields.io/github/license/coder/pulldash) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/coder/pulldash/ci.yml)
+Fast, filterable GitHub PR review, maintained independently by [paradoxon-tools](https://github.com/paradoxon-tools/pulldash).
 
-Fast, filterable PR review. Entirely client-side.
+## Desktop use
 
-> [!WARNING]
-> Pulldash is WIP. Expect bugs.
+Sign in with a GitHub classic personal access token with the `repo` scope (and `read:user` for profile access), or browse public PRs anonymously. The token is stored locally in the app profile. GitHub requests go directly to GitHub.
 
-## Try It
-
-**Browser**: [pulldash.com](https://pulldash.com). Replace `github.com` with `pulldash.com` in any PR URL.
-
-**Desktop**: [Latest release](https://github.com/coder/pulldash/releases) for Linux, macOS, Windows.
-
-[![Example](./docs/screenshots/overview.png)](https://pulldash.com)
-
-## Features
-
-- **Custom filters**: Add repos and filter by review requests, authored PRs, or all activity.
-
-  ![Filtering PRs](./docs/screenshots/filtering.png)
-
-- **Keyboard-driven**: `j`/`k` to navigate files, arrows for lines, `c` to comment, `s` to submit.
-
-  ![Keybinds](./docs/screenshots/keybind-driven.png)
-
-- **Fast file search**: `Ctrl+K` to fuzzy-find across hundreds of changed files.
-
-  ![Search](./docs/screenshots/search.png)
-
-## Why
-
-- GitHub's review UI is slow (especially for large diffs)
-- No central view to filter PRs you care about
-- AI tooling has produced more PRs than ever before—making a snappy review UI essential
-
-## How It Works
-
-GitHub's API supports [CORS](https://docs.github.com/en/rest/using-the-rest-api/using-cors-and-jsonp-to-make-cross-origin-requests), so Pulldash runs entirely client-side. No backend proxying your requests.
-
-- **Web Worker pool**: Diff parsing and syntax highlighting run in workers sized to `navigator.hardwareConcurrency`. The main thread stays free for scrolling.
-
-- **Pre-computed navigation**: When a diff loads, we index all navigable lines. Arrow keys are O(1)—no DOM queries.
-
-- **External store**: State lives outside React ([`useSyncExternalStore`](https://react.dev/reference/react/useSyncExternalStore)). Focusing line 5000 doesn't re-render the file tree.
-
-- **Virtualized rendering**: Diffs, file lists, and the command palette only render visible rows.
+This distribution has no automatic updater, analytics collection, shared OAuth app, hosted service dependency, or GitHub Actions workflows. Install updates manually from builds you control.
 
 ## Development
 
-```bash
-bun install
+```sh
+bun install --frozen-lockfile
 bun dev
 ```
 
-## License
+Checks: `bun typecheck`, `bun test`, `bun fmt:check`.
 
-[AGPL](./LICENSE)
+Build a Windows x64 installer locally:
+
+```sh
+bun run electron:build
+bunx electron-builder --config electron-builder.json --win nsis --x64 --publish never
+```
+
+Artifacts are written to `release/`. The Windows application ID is `tools.paradoxon.pulldash`. Publishing is disabled in the builder configuration. The T3 Code project provides saved install, build, and check commands.
+
+## License and provenance
+
+AGPL-3.0-only; see [LICENSE](LICENSE). Derived from Coder's Pulldash at source commit `1fd065eb`. Original source history and contributor copyright remain intact. This repository is operated independently and is not affiliated with Coder. See [NOTICE](NOTICE).

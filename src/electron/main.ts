@@ -1,5 +1,4 @@
-import { app, BrowserWindow, shell, nativeTheme, Menu, dialog } from "electron";
-import { autoUpdater } from "electron-updater";
+import { app, BrowserWindow, shell, nativeTheme, Menu } from "electron";
 import { resolve, join } from "path";
 import { readFileSync, existsSync } from "fs";
 import { Hono } from "hono";
@@ -168,72 +167,6 @@ function getAppIcon(): string | undefined {
 }
 
 // ============================================================================
-// Auto Updates
-// ============================================================================
-
-function setupAutoUpdater(): void {
-  // Don't check for updates in development
-  if (isDev) {
-    console.log("[Updater] Skipping auto-update in development mode");
-    return;
-  }
-
-  // Configure auto-updater
-  autoUpdater.autoDownload = true;
-  autoUpdater.autoInstallOnAppQuit = true;
-
-  // Log update events
-  autoUpdater.on("checking-for-update", () => {
-    console.log("[Updater] Checking for updates...");
-  });
-
-  autoUpdater.on("update-available", (info) => {
-    console.log("[Updater] Update available:", info.version);
-  });
-
-  autoUpdater.on("update-not-available", () => {
-    console.log("[Updater] App is up to date");
-  });
-
-  autoUpdater.on("download-progress", (progress) => {
-    console.log(
-      `[Updater] Download progress: ${Math.round(progress.percent)}%`
-    );
-  });
-
-  autoUpdater.on("update-downloaded", (info) => {
-    console.log("[Updater] Update downloaded:", info.version);
-
-    // Notify user and offer to restart
-    dialog
-      .showMessageBox(mainWindow!, {
-        type: "info",
-        title: "Update Ready",
-        message: `Version ${info.version} has been downloaded.`,
-        detail: "The update will be installed when you restart the app.",
-        buttons: ["Restart Now", "Later"],
-        defaultId: 0,
-      })
-      .then((result) => {
-        if (result.response === 0) {
-          autoUpdater.quitAndInstall(false, true);
-        }
-      });
-  });
-
-  autoUpdater.on("error", (err) => {
-    console.error("[Updater] Error:", err.message);
-  });
-
-  // Check for updates after a short delay
-  setTimeout(() => {
-    autoUpdater.checkForUpdates().catch((err) => {
-      console.error("[Updater] Failed to check for updates:", err.message);
-    });
-  }, 3000);
-}
-
-// ============================================================================
 // App Lifecycle
 // ============================================================================
 
@@ -241,7 +174,6 @@ app.whenReady().then(async () => {
   try {
     await startServer();
     createWindow();
-    setupAutoUpdater();
 
     app.on("activate", () => {
       // macOS: re-create window when dock icon clicked

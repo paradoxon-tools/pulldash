@@ -79,11 +79,10 @@ async function build() {
     version: mainPkg.version,
     description: mainPkg.description,
     main: "electron/main.js",
-    author: mainPkg.author || {
-      name: "Coder",
-      email: "support@coder.com",
-    },
+    author: mainPkg.author,
     license: mainPkg.license,
+    repository: mainPkg.repository,
+    homepage: mainPkg.homepage,
     // Note: no "type": "module" since we bundle as CommonJS
   };
 

@@ -1,0 +1,8 @@
+Pulldash
+
+This distribution is maintained by paradoxon-tools.
+Derived from Pulldash by Coder and its contributors, source commit 1fd065eb.
+Original source: https://github.com/coder/pulldash
+Original contributors retain their copyrights.
+Distributed under AGPL-3.0-only; see LICENSE.
+Modifications in this distribution remove upstream services and automation and establish independent maintenance.

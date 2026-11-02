@@ -180,7 +180,7 @@ const reviewFiles = [
 
 function PATAuthSection() {
   const { loginWithPAT } = useAuth();
-  const [showPATInput, setShowPATInput] = useState(false);
+  const [showPATInput, setShowPATInput] = useState(true);
   const [patToken, setPatToken] = useState("");
   const [patError, setPatError] = useState<string | null>(null);
   const [isValidatingPAT, setIsValidatingPAT] = useState(false);
@@ -206,7 +206,7 @@ function PATAuthSection() {
         onClick={() => setShowPATInput(true)}
         className="w-full text-center text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
       >
-        Or use a Personal Access Token
+        Use a Personal Access Token
       </button>
     );
   }
@@ -1015,43 +1015,12 @@ export function WelcomeDialog() {
   const {
     isAuthenticated,
     isAnonymous,
-    isLoading,
     isRateLimited,
-    deviceAuth,
-    startDeviceAuth,
-    cancelDeviceAuth,
     enableAnonymousMode,
     showWelcomeDialog,
     setShowWelcomeDialog,
   } = useAuth();
   const openPRReviewTab = useOpenPRReviewTab();
-
-  const [copied, setCopied] = useState(false);
-
-  // Copy user code to clipboard
-  const copyCode = useCallback(async () => {
-    if (deviceAuth.userCode) {
-      await navigator.clipboard.writeText(deviceAuth.userCode);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  }, [deviceAuth.userCode]);
-
-  // Open GitHub after user has copied the code
-  const openGitHub = useCallback(() => {
-    if (deviceAuth.verificationUri) {
-      window.open(deviceAuth.verificationUri, "_blank");
-    }
-  }, [deviceAuth.verificationUri]);
-
-  // Copy and open GitHub
-  const copyAndOpen = useCallback(async () => {
-    if (deviceAuth.userCode) {
-      await navigator.clipboard.writeText(deviceAuth.userCode);
-      setCopied(true);
-    }
-    openGitHub();
-  }, [deviceAuth.userCode, openGitHub]);
 
   // Open a featured PR
   const handleOpenFeaturedPR = useCallback(
@@ -1066,8 +1035,7 @@ export function WelcomeDialog() {
   // Handle close dialog
   const handleClose = useCallback(() => {
     setShowWelcomeDialog(false);
-    cancelDeviceAuth();
-  }, [setShowWelcomeDialog, cancelDeviceAuth]);
+  }, [setShowWelcomeDialog]);
 
   // Show if: not authenticated and not anonymous, OR explicitly requested via showWelcomeDialog (only when not authenticated), OR rate limited
   const shouldShow =
@@ -1078,10 +1046,6 @@ export function WelcomeDialog() {
   if (!shouldShow) {
     return null;
   }
-
-  const isPending = isLoading || deviceAuth.status === "polling";
-  const hasCode = !!deviceAuth.userCode;
-  const hasError = deviceAuth.status === "error";
 
   // Show close button when user is anonymous and explicitly opened the dialog (but not if rate limited)
   const showCloseButton = isAnonymous && showWelcomeDialog && !isRateLimited;
@@ -1142,110 +1106,30 @@ export function WelcomeDialog() {
               </div>
             )}
 
-            {/* Error State */}
-            {hasError && (
-              <div className="flex items-start gap-3 p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive mb-4">
-                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                <div className="text-sm">
-                  <p className="font-medium">Authentication failed</p>
-                  <p className="opacity-80 mt-0.5">{deviceAuth.error}</p>
-                </div>
+            <div className="space-y-4">
+              <PATAuthSection />
+
+              <p className="text-xs text-center text-muted-foreground">
+                All GitHub API calls are made directly from your device. Your
+                token is stored locally on this computer.
+              </p>
+
+              {/* Animation preview */}
+              <div className="pt-4">
+                <PRReviewAnimation />
               </div>
-            )}
 
-            {/* Device Code Flow */}
-            {hasCode ? (
-              <div className="space-y-4">
-                <div className="text-center py-4">
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Enter this code on GitHub
-                  </p>
-                  <button
-                    onClick={copyCode}
-                    className={cn(
-                      "group inline-flex items-center gap-3 px-5 py-3 rounded-md transition-all",
-                      "bg-card border border-border hover:border-foreground/20"
-                    )}
-                  >
-                    <span className="font-mono text-2xl font-bold tracking-[0.25em] text-foreground">
-                      {deviceAuth.userCode}
-                    </span>
-                    <span className="p-1 rounded bg-muted group-hover:bg-muted/80 transition-colors">
-                      {copied ? (
-                        <Check className="w-4 h-4 text-green-500" />
-                      ) : (
-                        <Copy className="w-4 h-4 text-muted-foreground" />
-                      )}
-                    </span>
-                  </button>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    {copied ? "Copied!" : "Click to copy"}
-                  </p>
-                </div>
-
-                <Button onClick={copyAndOpen} className="w-full h-10 gap-2">
-                  <ExternalLink className="w-4 h-4" />
-                  {copied ? "Open GitHub" : "Copy & Open GitHub"}
-                </Button>
-
-                <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground pt-2">
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  <span>Waiting for authorization...</span>
-                </div>
-
-                <Button
-                  onClick={cancelDeviceAuth}
-                  variant="ghost"
-                  className="w-full h-9 text-muted-foreground hover:text-foreground"
-                >
-                  Cancel
-                </Button>
-              </div>
-            ) : (
-              /* Sign In State */
-              <div className="space-y-4">
-                <Button
-                  onClick={startDeviceAuth}
-                  disabled={isPending}
-                  className="w-full h-10 gap-2"
-                >
-                  {isPending ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Connecting...
-                    </>
-                  ) : (
-                    <>
-                      <Github className="w-4 h-4" />
-                      Sign in with GitHub
-                    </>
-                  )}
-                </Button>
-
-                <PATAuthSection />
-
-                <p className="text-xs text-center text-muted-foreground">
-                  All GitHub API calls are made directly from your device.
-                  Pulldash does not store your GitHub token.
-                </p>
-
-                {/* Animation preview */}
-                <div className="pt-4">
-                  <PRReviewAnimation />
-                </div>
-
-                {/* GitHub repo link */}
-                <a
-                  href="https://github.com/coder/pulldash"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors pt-2"
-                >
-                  <ExternalLink className="w-3 h-3" />
-                  View on GitHub
-                </a>
-              </div>
-            )}
+              {/* GitHub repo link */}
+              <a
+                href="https://github.com/paradoxon-tools/pulldash"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors pt-2"
+              >
+                <ExternalLink className="w-3 h-3" />
+                View on GitHub
+              </a>
+            </div>
           </div>
 
           {/* Right Side - Try Without Signing In */}

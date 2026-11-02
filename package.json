@@ -1,6 +1,6 @@
 {
   "name": "pulldash",
-  "version": "0.0.5",
+  "version": "0.2.0",
   "description": "Fast, filterable PR review. Entirely client-side.",
   "type": "module",
   "bin": {
@@ -21,10 +21,6 @@
     "electron:package:mac": "bun run electron:build && electron-builder --config electron-builder.json --mac",
     "electron:package:win": "bun run electron:build && electron-builder --config electron-builder.json --win",
     "electron:package:linux": "bun run electron:build && electron-builder --config electron-builder.json --linux",
-    "electron:publish": "bun run electron:build && electron-builder --config electron-builder.json --publish always",
-    "electron:publish:mac": "bun run electron:build && electron-builder --config electron-builder.json --mac --publish always",
-    "electron:publish:win": "bun run electron:build && electron-builder --config electron-builder.json --win --publish always",
-    "electron:publish:linux": "bun run electron:build && electron-builder --config electron-builder.json --linux --publish always",
     "icons": "bun run scripts/generate-icons.ts",
     "fmt": "prettier --write --cache .",
     "fmt:check": "prettier --check .",
@@ -40,9 +36,8 @@
   ],
   "license": "AGPL-3.0-only",
   "author": {
-    "name": "Coder",
-    "email": "support@coder.com",
-    "url": "https://coder.com"
+    "name": "paradoxon-tools",
+    "url": "https://github.com/paradoxon-tools"
   },
   "devDependencies": {
     "@electron/asar": "^4.0.1",
@@ -66,13 +61,11 @@
     "diff": "^8.0.2",
     "electron": "^39.2.4",
     "electron-builder": "^26.0.12",
-    "electron-updater": "^6.6.2",
     "geist": "^1.5.1",
     "gitdiff-parser": "^0.3.1",
     "hono": "^4.10.7",
     "lucide-react": "^0.555.0",
     "png2icons": "^2.0.1",
-    "posthog-js": "^1.300.0",
     "prettier": "^3.7.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -98,5 +91,14 @@
     "rehype-raw": "^7.0.0",
     "rehype-sanitize": "^6.0.0",
     "remark-gemoji": "^8.0.0"
+  },
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paradoxon-tools/pulldash.git"
+  },
+  "homepage": "https://github.com/paradoxon-tools/pulldash",
+  "bugs": {
+    "url": "https://github.com/paradoxon-tools/pulldash/issues"
   }
 }

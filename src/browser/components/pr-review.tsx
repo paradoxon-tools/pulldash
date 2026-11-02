@@ -593,7 +593,7 @@ const FilePanel = memo(function FilePanel({
 
 const ReadOnlyBanner = memo(function ReadOnlyBanner() {
   const canWrite = useCanWrite();
-  const { startDeviceAuth } = useAuth();
+  const { openSignIn } = useAuth();
 
   if (canWrite) return null;
 
@@ -609,7 +609,7 @@ const ReadOnlyBanner = memo(function ReadOnlyBanner() {
         </span>
       </div>
       <button
-        onClick={startDeviceAuth}
+        onClick={openSignIn}
         className="flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-md bg-amber-500/20 text-amber-200 hover:bg-amber-500/30 transition-colors"
       >
         Sign in with GitHub
@@ -2339,7 +2339,7 @@ const InlineCommentForm = memo(function InlineCommentForm({
   const store = usePRReviewStore();
   const canWrite = useCanWrite();
   const currentUser = useCurrentUser();
-  const { startDeviceAuth } = useAuth();
+  const { openSignIn } = useAuth();
   const { addPendingComment } = useCommentActions();
   const [text, setText] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -2393,7 +2393,7 @@ const InlineCommentForm = memo(function InlineCommentForm({
             Sign in to leave comments
           </span>
           <button
-            onClick={startDeviceAuth}
+            onClick={openSignIn}
             className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md bg-green-600 text-white hover:bg-green-700 transition-colors"
           >
             Sign in with GitHub
